@@ -1,0 +1,49 @@
+#!/bin/sh
+
+NPMRC=~/.npmrc
+NPMRC_NAMED=$NPMRC.$2
+
+save () {
+  echo "; config for $1" > $NPMRC_NAMED \
+    && cat $NPMRC >> $NPMRC_NAMED \
+    && echo "$NPMRC_NAMED saved successfully" \
+    || echo "Failed to save $NPMRC_NAMED"
+}
+
+load () {
+  cp $NPMRC_NAMED $NPMRC \
+    && echo "Config for $1 successfully loaded" \
+    || echo "Failed to load $NPMRC_NAMED"
+}
+
+list () {
+  ls -a ~ | grep .npmrc.
+}
+
+install () {
+  cp ./npmrc-do /usr/local/bin/npmrc-do \
+    && chmod +x /usr/local/bin/npmrc-do \
+    && echo "npmrc-do installed successfully" \
+    || echo "failed to install npmrc-do"
+}
+
+remove () {
+  rm $NPMRC_NAMED \
+    && echo "Config for $1 removed" \
+    || echo "Failed to remove config for $1"
+}
+
+current () {
+  cat $NPMRC
+}
+
+case "$1" in
+"save"   ) save $2;;
+"load"   ) load $2;;
+"install") install;;
+"remove" ) remove $2;;
+"current") current;;
+*        ) list;;
+esac
+
+exit 0
