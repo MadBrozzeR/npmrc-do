@@ -7,13 +7,13 @@ save () {
   echo "; config for $1" > $NPMRC_NAMED \
     && cat $NPMRC >> $NPMRC_NAMED \
     && echo "$NPMRC_NAMED saved successfully" \
-    || echo "Failed to save $NPMRC_NAMED"
+    || (echo "Failed to save $NPMRC_NAMED" && return 1)
 }
 
 load () {
   cp $NPMRC_NAMED $NPMRC \
     && echo "Config for $1 successfully loaded" \
-    || echo "Failed to load $NPMRC_NAMED"
+    || (echo "Failed to load $NPMRC_NAMED" && return 1)
 }
 
 list () {
@@ -24,26 +24,33 @@ install () {
   cp ./npmrc-do /usr/local/bin/npmrc-do \
     && chmod +x /usr/local/bin/npmrc-do \
     && echo "npmrc-do installed successfully" \
-    || echo "failed to install npmrc-do"
+    || (echo "failed to install npmrc-do" && return 1)
 }
 
 remove () {
   rm $NPMRC_NAMED \
     && echo "Config for $1 removed" \
-    || echo "Failed to remove config for $1"
+    || (echo "Failed to remove config for $1" && return 1)
 }
 
 current () {
   cat $NPMRC
 }
 
+uninstall () {
+  rm /usr/local/bin/npmrc-do \
+    && echo "npmrc-do successfully uninstalled" \
+    || (echo "Failed to uninstall npmrc-do" && return 1)
+}
+
 case "$1" in
-"save"   ) save $2;;
-"load"   ) load $2;;
-"install") install;;
-"remove" ) remove $2;;
-"current") current;;
-*        ) list;;
+"save"     ) save $2 || exit 1;;
+"load"     ) load $2 || exit 1;;
+"install"  ) install || exit 1;;
+"remove"   ) remove $2 || exit 1;;
+"current"  ) current || exit 1;;
+"uninstall") uninstall || exit 1;;
+*          ) list || exit 1;;
 esac
 
 exit 0
