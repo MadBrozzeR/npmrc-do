@@ -43,14 +43,30 @@ uninstall () {
     || (echo "Failed to uninstall npmrc-do" && return 1)
 }
 
+help () {
+  echo "Syntax:"
+  echo "npmrc-do [command] [name]\n"
+  echo "Available commands:"
+  echo "list (default) - list all profiles in your home directory"
+  echo "save - save current profile with name [name]"
+  echo "load - load profile with name [name]"
+  echo "remove - remove saved profile with name [name]"
+  echo "current - output content of current .npmrc"
+  echo "install - inspall script to /usr/local/bin (Admin permissions required)"
+  echo "uninstall - remove script from /usr/local/bin"
+  echo "help - output this help"
+}
+
 case "$1" in
 "save"     ) save $2 || exit 1;;
 "load"     ) load $2 || exit 1;;
-"install"  ) install || exit 1;;
 "remove"   ) remove $2 || exit 1;;
 "current"  ) current || exit 1;;
+"install"  ) install || exit 1;;
 "uninstall") uninstall || exit 1;;
-*          ) list || exit 1;;
+"list" | "") list || exit 1;;
+"help"     ) help || exit 1;;
+*          ) help && exit 1;;
 esac
 
 exit 0
